@@ -1,35 +1,35 @@
 import React, { useState } from 'react';
 
-const Form = () => {
-    const [name,setName] = useState("");
-    const [email,setEmail]= useState("");
-    const [password,setPassword] = useState("");
+const Form = ({ onSubmit, fields }) => {
+  const [formValues, setFormValues] = useState({});
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({ ...prevValues, [name]: value }));
+  };
 
-        let obj = {
-            name,
-            email,
-            password
-        }
-        console.log(obj);
-    } 
-
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit(formValues);
+  };
 
   return (
-    <div>
-      <form>
-        <label htmlFor="name">Name</label>
-        <input type='text' id='name' value={name} onChange={(e) => setName(e.target.value)} /><br/>
-        <label htmlFor="email">Email</label>
-        <input type='email' id='email' value={email} onChange={(e)=>setEmail(e.target.value)}/> <br/>
-        <label htmlFor="password">Password</label>
-        <input type='password' id='password' value={password} onChange={(e)=>setPassword(e.target.value)}/> <br/>
-        <button type='submit' onClick={handleSubmit}>Submit</button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit}>
+      {fields.map((field) => (
+        <div key={field.name}>
+          <label htmlFor={field.name}>{field.label}</label>
+          <input
+            type={field.type}
+            id={field.name}
+            name={field.name}
+            value={formValues[field.name] || ''}
+            onChange={handleInputChange}
+          />
+        </div>
+      ))}
+      <button type="submit">Submit</button>
+    </form>
   );
-}
+};
 
 export default Form;
